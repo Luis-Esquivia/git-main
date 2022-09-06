@@ -1,0 +1,194 @@
+-- phpMyAdmin SQL Dump
+-- version 5.1.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 01-09-2022 a las 05:48:16
+-- Versión del servidor: 10.4.22-MariaDB
+-- Versión de PHP: 8.1.2
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de datos: `registration_system`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ingreso`
+--
+
+CREATE TABLE `ingreso` (
+  `id_ingreso` int(11) NOT NULL,
+  `fecha` date NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `articulo` varchar(200) NOT NULL,
+  `serial_articulo` varchar(100) DEFAULT NULL,
+  `hora_ingreso` time NOT NULL,
+  `hora_salida` time DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `item`
+--
+
+CREATE TABLE `item` (
+  `id_item` int(11) NOT NULL,
+  `descripcion` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `item`
+--
+
+INSERT INTO `item` (`id_item`, `descripcion`) VALUES
+(1, 'tipo_documento'),
+(2, 'roles');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sub_item`
+--
+
+CREATE TABLE `sub_item` (
+  `id_sub_item` int(11) NOT NULL,
+  `id_item` int(11) NOT NULL,
+  `descripcion` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `sub_item`
+--
+
+INSERT INTO `sub_item` (`id_sub_item`, `id_item`, `descripcion`) VALUES
+(3, 1, 'ti'),
+(4, 1, 'cc'),
+(5, 1, 'ce'),
+(6, 2, 'admin'),
+(7, 2, 'vigilante'),
+(8, 2, 'instructor');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id_usuario` int(11) NOT NULL,
+  `tipo_usuario` int(11) NOT NULL,
+  `tipo_documento` int(11) NOT NULL,
+  `numero_documento` int(20) NOT NULL,
+  `contrasena_usuario` varchar(20) NOT NULL,
+  `nombre` text NOT NULL,
+  `apellidos` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id_usuario`, `tipo_usuario`, `tipo_documento`, `numero_documento`, `contrasena_usuario`, `nombre`, `apellidos`) VALUES
+(1, 6, 4, 1042422036, 'marce123', 'Marcela', 'Sevilla Lopez'),
+(2, 7, 4, 1067955411, 'luis123', 'Luis Daniel', 'Esquivia Hernandez'),
+(5, 8, 4, 1234567, 'instructor1', 'Juan', 'Miranda');
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `ingreso`
+--
+ALTER TABLE `ingreso`
+  ADD PRIMARY KEY (`id_ingreso`),
+  ADD KEY `id_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `item`
+--
+ALTER TABLE `item`
+  ADD PRIMARY KEY (`id_item`);
+
+--
+-- Indices de la tabla `sub_item`
+--
+ALTER TABLE `sub_item`
+  ADD PRIMARY KEY (`id_sub_item`),
+  ADD KEY `id_item` (`id_item`);
+
+--
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD KEY `tipo_usuario` (`tipo_usuario`),
+  ADD KEY `tipo_documento` (`tipo_documento`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `ingreso`
+--
+ALTER TABLE `ingreso`
+  MODIFY `id_ingreso` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `item`
+--
+ALTER TABLE `item`
+  MODIFY `id_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `sub_item`
+--
+ALTER TABLE `sub_item`
+  MODIFY `id_sub_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `ingreso`
+--
+ALTER TABLE `ingreso`
+  ADD CONSTRAINT `ingreso_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
+
+--
+-- Filtros para la tabla `sub_item`
+--
+ALTER TABLE `sub_item`
+  ADD CONSTRAINT `sub_item_ibfk_1` FOREIGN KEY (`id_item`) REFERENCES `item` (`id_item`);
+
+--
+-- Filtros para la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`tipo_usuario`) REFERENCES `sub_item` (`id_sub_item`),
+  ADD CONSTRAINT `usuarios_ibfk_2` FOREIGN KEY (`tipo_documento`) REFERENCES `sub_item` (`id_sub_item`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
